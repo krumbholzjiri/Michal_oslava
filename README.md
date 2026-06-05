@@ -89,3 +89,31 @@ Pro dynamické generování ilustrací (pouze `_text.html`) je potřeba připoje
 - čisté HTML + CSS + JavaScript (žádné frameworky)
 - SVG ilustrace generované ručně i přes Anthropic Claude API
 - Heraldické znaky: Jiřetín pod Bukovou, Albrechtice v Jizerských horách, Jablonec nad Nisou
+
+---
+
+## GitHub Pages — perzistentní ukládání slov
+
+Přidaná slova od návštěvníků se ukládají přes `window.storage` API (claude.ai artifacts storage). Při každém dalším načtení stránky se uložená slova automaticky obnoví včetně jejich ilustrací.
+
+### Nasazení na GitHub Pages
+
+1. Ulož soubory do repozitáře (např. `docs/` složka nebo root)
+2. V Settings → Pages zvol větev a složku
+3. Stránka bude dostupná na `https://<user>.github.io/<repo>/`
+
+> **Poznámka k storage:** `window.storage` je dostupné v prostředí claude.ai. Pro samostatné GitHub Pages nasazení je potřeba nahradit storage backend — doporučené možnosti:
+> - **localStorage** (data zůstanou jen v daném prohlížeči)
+> - **GitHub Gist API** (sdílená data pro všechny návštěvníky, vyžaduje token)
+> - **Supabase / Firebase** (plnohodnotná databáze zdarma)
+
+### Ukázka náhrady za localStorage (nejjednodušší)
+
+```js
+// Místo window.storage.get('custom-words'):
+const words = JSON.parse(localStorage.getItem('custom-words') || '[]');
+
+// Místo window.storage.set('custom-words', JSON.stringify(words)):
+localStorage.setItem('custom-words', JSON.stringify(words));
+```
+
